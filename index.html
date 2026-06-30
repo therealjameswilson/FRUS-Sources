@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carter, Reagan, and George H.W. Bush FRUS Source List</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18212f;
+        --muted: #5a6472;
+        --line: #d7dde6;
+        --panel: #f6f8fb;
+        --accent: #0b5cad;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: #ffffff;
+        line-height: 1.5;
+      }
+      main {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 44px 20px 64px;
+      }
+      header {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 24px;
+        margin-bottom: 28px;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+      p {
+        margin: 0 0 16px;
+        max-width: 78ch;
+      }
+      .deck {
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin: 24px 0 28px;
+      }
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: var(--panel);
+      }
+      .stat strong {
+        display: block;
+        font-size: 1.45rem;
+        line-height: 1.1;
+      }
+      .stat span {
+        color: var(--muted);
+        font-size: .92rem;
+      }
+      h2 {
+        margin: 32px 0 12px;
+        font-size: 1.35rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 28px;
+        font-size: .96rem;
+      }
+      th, td {
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--line);
+        padding: 10px 8px;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 650;
+      }
+      a {
+        color: var(--accent);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+      }
+      code {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 1px 4px;
+      }
+      .note {
+        border-left: 4px solid var(--accent);
+        background: var(--panel);
+        padding: 12px 14px;
+        margin: 20px 0;
+      }
+      @media (max-width: 680px) {
+        main { padding-top: 28px; }
+        table, thead, tbody, th, td, tr { display: block; }
+        thead { display: none; }
+        tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
+        td { border: 0; padding: 4px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Carter, Reagan, and George H.W. Bush FRUS Source List</h1>
+        <p class="deck">Canonical source-list export for published source-bearing Carter, Reagan, and George H.W. Bush volumes on <a href="https://history.state.gov/historicaldocuments">history.state.gov</a>, built from official Office of the Historian administration pages plus official static EPUB/PDF files.</p>
+      </header>
+
+      <section class="stats" aria-label="Export counts">
+        <div class="stat"><strong>119</strong><span>administration volume links inspected</span></div>
+        <div class="stat"><strong>41</strong><span>published source-bearing volumes harvested</span></div>
+        <div class="stat"><strong>3,293</strong><span>volume-source page entries</span></div>
+        <div class="stat"><strong>2,550</strong><span>canonical deduplicated source entries</span></div>
+        <div class="stat"><strong>13,042</strong><span>document members inspected</span></div>
+        <div class="stat"><strong>12,298</strong><span>document-level Source notes harvested</span></div>
+      </section>
+
+      <section>
+        <h2>Primary Downloads</h2>
+        <table>
+          <thead>
+            <tr><th>File</th><th>Use</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="data/canonical-volume-sources.csv">canonical-volume-sources.csv</a></td>
+              <td>Deduplicated canonical source entries from FRUS volume Sources pages.</td>
+            </tr>
+            <tr>
+              <td><a href="data/volume-source-entries.csv">volume-source-entries.csv</a></td>
+              <td>Every parsed source-page entry with volume context.</td>
+            </tr>
+            <tr>
+              <td><a href="data/document-source-notes.csv">document-source-notes.csv</a></td>
+              <td>Document-level <code>Source:</code> notes and status rows from document-bearing EPUBs.</td>
+            </tr>
+            <tr>
+              <td><a href="data/volume-inventory.csv">volume-inventory.csv</a></td>
+              <td>All discovered Carter, Reagan, and George H.W. Bush volume links with publication state.</td>
+            </tr>
+            <tr>
+              <td><a href="data/frus-admin-source-list.json">frus-admin-source-list.json</a></td>
+              <td>Full structured export with volumes, source entries, canonical sources, narratives, and document Source notes.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Scope Notes</h2>
+        <p>The export includes 40 document-bearing EPUB harvests and one published PDF/source-list fallback for original Carter Volume IX. Carter <code>frus1977-80v09</code> has a shell EPUB, so its source list is represented through a cached official PDF and the verified structured source-list alias to <code>frus1977-80v09Ed2</code>.</p>
+        <p class="note">Document-level Source notes are harvested only where official EPUB document HTML exists. The source-page list is the canonical source register for all 41 published source-bearing volumes.</p>
+      </section>
+
+      <section>
+        <h2>Official Volume Pages</h2>
+        <p><a href="https://history.state.gov/historicaldocuments/carter">Carter</a> · <a href="https://history.state.gov/historicaldocuments/reagan">Reagan</a> · <a href="https://history.state.gov/historicaldocuments/bush-ghw">George H.W. Bush</a></p>
+      </section>
+    </main>
+  </body>
+</html>
