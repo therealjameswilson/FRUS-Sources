@@ -122,12 +122,116 @@
         padding: 12px 14px;
         margin: 20px 0;
       }
+      .source-note-browser {
+        border-top: 1px solid var(--line);
+        margin-top: 40px;
+        padding-top: 28px;
+      }
+      .source-note-toolbar {
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px);
+        gap: 12px;
+        align-items: end;
+        margin: 18px 0 12px;
+      }
+      .source-note-toolbar label {
+        display: grid;
+        gap: 6px;
+        color: var(--muted);
+        font-size: .88rem;
+        font-weight: 650;
+      }
+      .source-note-toolbar input,
+      .source-note-toolbar select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink);
+        background: #ffffff;
+        font: inherit;
+        padding: 10px;
+      }
+      .source-note-toolbar input:focus,
+      .source-note-toolbar select:focus {
+        outline: 2px solid rgba(11, 92, 173, .22);
+        border-color: var(--accent);
+      }
+      .source-note-count {
+        color: var(--muted);
+        font-size: .94rem;
+        margin-bottom: 10px;
+      }
+      .source-note-downloads {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 12px 0 18px;
+      }
+      .source-note-downloads a {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--accent);
+        font-weight: 650;
+        padding: 8px 10px;
+        text-decoration: none;
+      }
+      .source-note-downloads a:hover {
+        border-color: var(--accent);
+        background: #ffffff;
+      }
+      .source-note-scroll {
+        max-height: 620px;
+        overflow-y: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .source-note-item {
+        border-bottom: 1px solid var(--line);
+        padding: 14px;
+      }
+      .source-note-item:last-child {
+        border-bottom: 0;
+      }
+      .source-note-heading {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: baseline;
+        margin-bottom: 4px;
+      }
+      .source-note-heading strong {
+        font-size: 1rem;
+      }
+      .source-note-heading a {
+        font-weight: 650;
+      }
+      .source-note-title {
+        margin: 0 0 4px;
+        max-width: none;
+      }
+      .source-note-meta {
+        color: var(--muted);
+        font-size: .88rem;
+        margin-bottom: 8px;
+      }
+      .source-note-text {
+        margin: 0;
+        max-width: none;
+      }
+      .source-note-empty,
+      .source-note-error {
+        color: var(--muted);
+        padding: 14px;
+      }
       @media (max-width: 680px) {
         main { padding-top: 28px; }
         table, thead, tbody, th, td, tr { display: block; }
         thead { display: none; }
         tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
         td { border: 0; padding: 4px 0; }
+        .source-note-toolbar { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -140,9 +244,9 @@
 
       <nav class="share-links" aria-label="Share links">
         <a href="https://github.com/therealjameswilson/FRUS-Sources">GitHub repo</a>
+        <a href="data/frus-admin-source-list.json">Full JSON file</a>
         <a href="data/copy-paste-source-notes.txt">Copy-paste Source notes</a>
         <a href="data/source-note-style-audit.md">Style audit</a>
-        <a href="data/frus-admin-source-list.json">Full JSON file</a>
       </nav>
 
       <section class="stats" aria-label="Export counts">
@@ -213,6 +317,178 @@
         <h2>Official Volume Pages</h2>
         <p><a href="https://history.state.gov/historicaldocuments/carter">Carter</a> · <a href="https://history.state.gov/historicaldocuments/reagan">Reagan</a> · <a href="https://history.state.gov/historicaldocuments/bush-ghw">George H.W. Bush</a></p>
       </section>
+
+      <section id="source-notes" class="source-note-browser" aria-labelledby="source-notes-heading">
+        <h2 id="source-notes-heading">All Document-Level Source Notes</h2>
+        <p>This scrolling list includes every harvested document-level <code>Source:</code> note from the published Carter, Reagan, and George H.W. Bush FRUS volumes in this export.</p>
+        <div class="source-note-downloads" aria-label="Source note downloads">
+          <a href="data/document-source-notes.csv">Download Source notes CSV</a>
+          <a href="data/document-source-notes.json">Open Source notes JSON</a>
+        </div>
+        <div class="source-note-toolbar">
+          <label>
+            Search Source notes
+            <input id="source-note-query" type="search" autocomplete="off" placeholder="Search repositories, folders, titles, volumes">
+          </label>
+          <label>
+            Volume
+            <select id="source-note-volume">
+              <option value="">All volumes</option>
+            </select>
+          </label>
+        </div>
+        <p id="source-note-count" class="source-note-count">Loading Source notes...</p>
+        <div id="source-note-list" class="source-note-scroll" role="list" aria-live="polite"></div>
+      </section>
     </main>
+
+    <script>
+      (() => {
+        const queryInput = document.getElementById("source-note-query");
+        const volumeSelect = document.getElementById("source-note-volume");
+        const countNode = document.getElementById("source-note-count");
+        const listNode = document.getElementById("source-note-list");
+        let allNotes = [];
+        let renderToken = 0;
+
+        function noteSearchText(note) {
+          return [
+            note.administration_label,
+            note.volume_id,
+            note.volume_title,
+            note.doc_no,
+            note.title,
+            note.dateline,
+            note.source_note,
+            note.url
+          ].filter(Boolean).join(" ").toLowerCase();
+        }
+
+        function setCount(shown, total, isRendering = false) {
+          const suffix = isRendering ? " Rendering list..." : "";
+          countNode.textContent = `${shown.toLocaleString()} of ${total.toLocaleString()} Source notes shown.${suffix}`;
+        }
+
+        function createNoteItem(note) {
+          const item = document.createElement("article");
+          item.className = "source-note-item";
+          item.setAttribute("role", "listitem");
+
+          const heading = document.createElement("div");
+          heading.className = "source-note-heading";
+
+          const label = document.createElement("strong");
+          label.textContent = `${note.volume_id} document ${note.doc_no}`;
+          heading.append(label);
+
+          if (note.url) {
+            const link = document.createElement("a");
+            link.href = note.url;
+            link.textContent = "Official document";
+            heading.append(link);
+          }
+
+          const title = document.createElement("p");
+          title.className = "source-note-title";
+          title.textContent = note.title || note.volume_title || "Untitled document";
+
+          const meta = document.createElement("div");
+          meta.className = "source-note-meta";
+          meta.textContent = [note.administration_label, note.volume_title, note.dateline].filter(Boolean).join(" | ");
+
+          const text = document.createElement("p");
+          text.className = "source-note-text";
+          text.textContent = note.source_note;
+
+          item.append(heading, title, meta, text);
+          return item;
+        }
+
+        function renderNotes(rows) {
+          renderToken += 1;
+          const token = renderToken;
+          listNode.replaceChildren();
+          if (!rows.length) {
+            const empty = document.createElement("p");
+            empty.className = "source-note-empty";
+            empty.textContent = "No Source notes match the current filters.";
+            listNode.append(empty);
+            setCount(0, allNotes.length);
+            return;
+          }
+
+          let index = 0;
+          setCount(rows.length, allNotes.length, true);
+
+          function appendChunk() {
+            if (token !== renderToken) return;
+            const fragment = document.createDocumentFragment();
+            const end = Math.min(index + 250, rows.length);
+            for (; index < end; index += 1) {
+              fragment.append(createNoteItem(rows[index]));
+            }
+            listNode.append(fragment);
+            if (index < rows.length) {
+              window.requestAnimationFrame(appendChunk);
+            } else {
+              setCount(rows.length, allNotes.length);
+            }
+          }
+
+          appendChunk();
+        }
+
+        function applyFilters() {
+          const query = queryInput.value.trim().toLowerCase();
+          const volume = volumeSelect.value;
+          const rows = allNotes.filter((note) => {
+            if (volume && note.volume_id !== volume) return false;
+            if (!query) return true;
+            return note.searchText.includes(query);
+          });
+          renderNotes(rows);
+        }
+
+        function debounce(callback, wait) {
+          let timeout;
+          return () => {
+            window.clearTimeout(timeout);
+            timeout = window.setTimeout(callback, wait);
+          };
+        }
+
+        fetch("data/document-source-notes.json")
+          .then((response) => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+          })
+          .then((payload) => {
+            allNotes = (payload.notes || [])
+              .filter((note) => note.status === "source_note" && note.source_note)
+              .map((note) => ({ ...note, searchText: noteSearchText(note) }));
+
+            const volumes = [...new Set(allNotes.map((note) => note.volume_id).filter(Boolean))].sort();
+            for (const volume of volumes) {
+              const option = document.createElement("option");
+              option.value = volume;
+              option.textContent = volume;
+              volumeSelect.append(option);
+            }
+
+            queryInput.addEventListener("input", debounce(applyFilters, 120));
+            volumeSelect.addEventListener("input", applyFilters);
+            applyFilters();
+          })
+          .catch((error) => {
+            renderToken += 1;
+            listNode.replaceChildren();
+            const message = document.createElement("p");
+            message.className = "source-note-error";
+            message.textContent = `Unable to load Source notes: ${error.message}`;
+            listNode.append(message);
+            countNode.textContent = "Source notes failed to load.";
+          });
+      })();
+    </script>
   </body>
 </html>
