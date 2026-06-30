@@ -140,6 +140,8 @@
 
       <nav class="share-links" aria-label="Share links">
         <a href="https://github.com/therealjameswilson/FRUS-Sources">GitHub repo</a>
+        <a href="data/copy-paste-source-notes.txt">Copy-paste Source notes</a>
+        <a href="data/source-note-style-audit.md">Style audit</a>
         <a href="data/frus-admin-source-list.json">Full JSON file</a>
       </nav>
 
@@ -160,6 +162,18 @@
           </thead>
           <tbody>
             <tr>
+              <td><a href="data/copy-paste-source-notes.txt">copy-paste-source-notes.txt</a></td>
+              <td>Compiler-ready Source note text only, one pasteable note per paragraph.</td>
+            </tr>
+            <tr>
+              <td><a href="data/copy-paste-source-notes.csv">copy-paste-source-notes.csv</a></td>
+              <td>Compiler-ready Source note rows only, with document context and canonical document links.</td>
+            </tr>
+            <tr>
+              <td><a href="data/source-note-style-audit.md">source-note-style-audit.md</a></td>
+              <td>Public audit confirming the copy-paste exports pass FRUS Source note style and extraction-safety gates.</td>
+            </tr>
+            <tr>
               <td><a href="data/canonical-volume-sources.csv">canonical-volume-sources.csv</a></td>
               <td>Deduplicated canonical source entries from FRUS volume Sources pages.</td>
             </tr>
@@ -169,7 +183,7 @@
             </tr>
             <tr>
               <td><a href="data/document-source-notes.csv">document-source-notes.csv</a></td>
-              <td>Document-level <code>Source:</code> notes and status rows from document-bearing EPUBs.</td>
+              <td>Full document Source note register, including status rows for editorial notes, empty stubs, and pending placeholders.</td>
             </tr>
             <tr>
               <td><a href="data/volume-inventory.csv">volume-inventory.csv</a></td>
@@ -181,6 +195,12 @@
             </tr>
           </tbody>
         </table>
+      </section>
+
+      <section>
+        <h2>Compiler-Ready Source Note Audit</h2>
+        <p>The copy-paste exports contain 12,298 document-level FRUS Source notes and zero style or extraction-safety failures. Each exported row begins with exactly one leading <code>Source:</code> label and excludes editorial-note, empty-stub, and pending-placeholder status rows.</p>
+        <p class="note">Two notes retain a second internal <code>Source:</code> string because the published FRUS note itself contains that text; five notes retain official redacted source-path forms such as <code>Source: [ ... not declassified</code>.</p>
       </section>
 
       <section>

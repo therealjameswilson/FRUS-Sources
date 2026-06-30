@@ -1,0 +1,137 @@
+{
+  "schema_version": "frus-source-note-style-audit-v1",
+  "generated_at": "2026-06-30T13:52:14.843Z",
+  "site": "https://therealjameswilson.github.io/FRUS-Sources/",
+  "source_data": "data/frus-admin-source-list.json",
+  "standard": {
+    "rule": "Compiler copy-paste rows must be document-level published FRUS Source notes, begin with exactly one leading Source: label, keep archival or selected published-source provenance in FRUS order, and exclude discovery URLs, local paths, TEI/HTML residue, status rows, and extraction scaffolding.",
+    "provenance_boundary": "Public URLs, source-page navigation, EPUB members, and local file paths are tracking data, not part of copy-paste Source note text."
+  },
+  "totals": {
+    "document_rows": 13042,
+    "source_note_rows_checked": 12298,
+    "unique_source_note_texts": 12073,
+    "copy_paste_source_note_rows": 12298,
+    "copy_paste_failures": 0
+  },
+  "checks": [
+    {
+      "name": "source_note_status_rows_have_text",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "missing_leading_source_label",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "leading_duplicate_source_label",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "uppercase_body_source_capture_at_start",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "html_or_xml_tag",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "html_entity_artifact",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "url_or_web_locator_inside_source_note",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "local_filesystem_path_inside_source_note",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "replacement_character",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "tei_or_footnote_backlink_artifact",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "leading_or_trailing_whitespace",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "embedded_newline",
+      "count": 0,
+      "sample_ids": []
+    },
+    {
+      "name": "hash_mismatch",
+      "count": 0,
+      "sample_ids": []
+    }
+  ],
+  "accepted_official_cases": {
+    "internal_source_label_count": 2,
+    "internal_source_label_rows": [
+      {
+        "document_source_note_id": "frus1977-80v28-d236",
+        "volume_id": "frus1977-80v28",
+        "doc_no": 236,
+        "url": "https://history.state.gov/historicaldocuments/frus1977-80v28/d236",
+        "note": "Second Source: is internal published FRUS text, not a leading label duplicate."
+      },
+      {
+        "document_source_note_id": "frus1977-80v28-d237",
+        "volume_id": "frus1977-80v28",
+        "doc_no": 237,
+        "url": "https://history.state.gov/historicaldocuments/frus1977-80v28/d237",
+        "note": "Second Source: is internal published FRUS text, not a leading label duplicate."
+      }
+    ],
+    "redacted_source_path_count": 5,
+    "redacted_source_path_rows": [
+      {
+        "document_source_note_id": "frus1977-80v06-d66",
+        "volume_id": "frus1977-80v06",
+        "doc_no": 66,
+        "url": "https://history.state.gov/historicaldocuments/frus1977-80v06/d66"
+      },
+      {
+        "document_source_note_id": "frus1977-80v23-d306",
+        "volume_id": "frus1977-80v23",
+        "doc_no": 306,
+        "url": "https://history.state.gov/historicaldocuments/frus1977-80v23/d306"
+      },
+      {
+        "document_source_note_id": "frus1977-80v23-d339",
+        "volume_id": "frus1977-80v23",
+        "doc_no": 339,
+        "url": "https://history.state.gov/historicaldocuments/frus1977-80v23/d339"
+      },
+      {
+        "document_source_note_id": "frus1981-88v10-d163",
+        "volume_id": "frus1981-88v10",
+        "doc_no": 163,
+        "url": "https://history.state.gov/historicaldocuments/frus1981-88v10/d163"
+      },
+      {
+        "document_source_note_id": "frus1981-88v13-d252",
+        "volume_id": "frus1981-88v13",
+        "doc_no": 252,
+        "url": "https://history.state.gov/historicaldocuments/frus1981-88v13/d252"
+      }
+    ]
+  },
+  "conclusion": "PASS: all document-level Source notes in the copy-paste exports meet the FRUS source-note style and extraction-safety gates."
+}

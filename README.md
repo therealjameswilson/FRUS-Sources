@@ -1,6 +1,7 @@
 # Carter, Reagan, and George H.W. Bush FRUS Source List
 
-Generated: 2026-06-29T21:59:06.781Z
+Source export generated: 2026-06-30T02:20:25.297Z
+Copy-paste audit generated: 2026-06-30T13:52:14.843Z
 
 This export is built from the live Office of the Historian administration pages and official `static.history.state.gov` EPUBs and PDFs. Volume-page EPUB links are primary; if a live volume page blocks scripted access, the exporter probes the canonical static EPUB URL and harvests EPUBs that contain source or document HTML. Published shell-only EPUBs are checked for official PDFs; Carter Volume IX is represented with a cached PDF and a verified structured source-list alias to the second revised edition. Planned pages remain in the inventory but are excluded from harvested source counts.
 
@@ -17,6 +18,16 @@ This export is built from the live Office of the Historian administration pages 
 - Document members inspected: 13042
 - Document-level Source notes harvested: 12298
 - Unique document-level Source-note texts: 12073
+- Compiler-ready Source-note rows exported: 12298
+- Source-note style audit failures: 0
+
+## Compiler Copy-Paste Source Notes
+
+Use `data/copy-paste-source-notes.txt` when compilers need paste-ready Source note text only. It contains one document-level FRUS Source note per paragraph and excludes editorial-note, empty-stub, and pending-placeholder status rows.
+
+Use `data/copy-paste-source-notes.csv` when compilers need the same paste-ready Source notes with volume, document, hash, and canonical `history.state.gov` context. The filtered export contains 12298 rows, all beginning with exactly one leading `Source:` label.
+
+The public audit in `data/source-note-style-audit.md` reports zero style or extraction-safety failures. Two notes retain a second internal `Source:` string because the published FRUS note itself contains that text; five notes retain official redacted source-path forms such as `Source: [ ... not declassified`.
 
 ## Published Source-Bearing Volumes By Administration
 
@@ -634,7 +645,11 @@ Source: Carter Library, National Security Affairs, Brzezinski Material, Country 
 ## Files
 
 - `frus-admin-source-list.json`: full structured export.
+- `copy-paste-source-notes.txt`: compiler-ready Source note text only, one pasteable note per paragraph.
+- `copy-paste-source-notes.csv`: compiler-ready Source note rows only, with document context columns.
+- `source-note-style-audit.md`: public style audit for the copy-paste exports.
+- `source-note-style-audit.json`: machine-readable style audit details.
 - `canonical-volume-sources.csv`: deduplicated source entries from volume Sources pages.
 - `volume-source-entries.csv`: every parsed source-page entry with volume context.
-- `document-source-notes.csv`: harvested document-level `Source:` notes and status rows from document-bearing EPUBs.
+- `document-source-notes.csv`: full document Source note register, including status rows for editorial notes, empty stubs, and pending placeholders.
 - `volume-inventory.csv`: included and excluded volume pages with publication state.
