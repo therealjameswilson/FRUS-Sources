@@ -66,6 +66,25 @@
         color: var(--muted);
         font-size: .92rem;
       }
+      .share-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0 0 28px;
+      }
+      .share-links a {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--accent);
+        font-weight: 650;
+        padding: 10px 12px;
+        text-decoration: none;
+      }
+      .share-links a:hover {
+        border-color: var(--accent);
+        background: #ffffff;
+      }
       h2 {
         margin: 32px 0 12px;
         font-size: 1.35rem;
@@ -118,6 +137,11 @@
         <h1>Carter, Reagan, and George H.W. Bush FRUS Source List</h1>
         <p class="deck">Canonical source-list export for published source-bearing Carter, Reagan, and George H.W. Bush volumes on <a href="https://history.state.gov/historicaldocuments">history.state.gov</a>, built from official Office of the Historian administration pages plus official static EPUB/PDF files.</p>
       </header>
+
+      <nav class="share-links" aria-label="Share links">
+        <a href="https://github.com/therealjameswilson/FRUS-Sources">GitHub repo</a>
+        <a href="data/frus-admin-source-list.json">Full JSON file</a>
+      </nav>
 
       <section class="stats" aria-label="Export counts">
         <div class="stat"><strong>119</strong><span>administration volume links inspected</span></div>
