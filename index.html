@@ -319,15 +319,15 @@
       </section>
 
       <section id="source-notes" class="source-note-browser" aria-labelledby="source-notes-heading">
-        <h2 id="source-notes-heading">All Document-Level Source Notes</h2>
-        <p>This scrolling list includes every harvested document-level <code>Source:</code> note from the published Carter, Reagan, and George H.W. Bush FRUS volumes in this export.</p>
+        <h2 id="source-notes-heading">All Document-Level Source Note Citations</h2>
+        <p>This scrolling list includes the citation portion of every harvested document-level <code>Source:</code> note from the published Carter, Reagan, and George H.W. Bush FRUS volumes in this export.</p>
         <div class="source-note-downloads" aria-label="Source note downloads">
-          <a href="data/document-source-notes.csv">Download Source notes CSV</a>
-          <a href="data/document-source-notes.json">Open Source notes JSON</a>
+          <a href="data/document-source-notes.csv">Download full Source notes CSV</a>
+          <a href="data/document-source-notes.json">Open full Source notes JSON</a>
         </div>
         <div class="source-note-toolbar">
           <label>
-            Search Source notes
+            Search citations
             <input id="source-note-query" type="search" autocomplete="off" placeholder="Search repositories, folders, titles, volumes">
           </label>
           <label>
@@ -359,14 +359,100 @@
             note.doc_no,
             note.title,
             note.dateline,
-            note.source_note,
+            note.citation_text,
             note.url
           ].filter(Boolean).join(" ").toLowerCase();
         }
 
+        function firstCitationSentence(text) {
+          const abbreviations = new Set([
+            "adm",
+            "approx",
+            "asst",
+            "col",
+            "dept",
+            "dr",
+            "e.g",
+            "fig",
+            "gen",
+            "gov",
+            "hon",
+            "i.e",
+            "inc",
+            "jr",
+            "lt",
+            "maj",
+            "mr",
+            "mrs",
+            "ms",
+            "no",
+            "nos",
+            "p",
+            "pp",
+            "pres",
+            "prof",
+            "pt",
+            "pts",
+            "rev",
+            "sec",
+            "sen",
+            "sr",
+            "st",
+            "u.k",
+            "u.n",
+            "u.s",
+            "vol",
+            "vols",
+            "vs"
+          ]);
+
+          for (let index = 0; index < text.length; index += 1) {
+            if (text[index] !== ".") continue;
+            const next = text.slice(index + 1);
+            if (next.trim() === "") return text.slice(0, index + 1);
+            if (!/^\s+["'([]?[A-Z]/.test(next)) continue;
+
+            const prior = text.slice(0, index);
+            const token = (prior.match(/([A-Za-z](?:[A-Za-z.]*)?)$/) || [])[1] || "";
+            const normalized = token.toLowerCase().replace(/\.$/, "");
+            if (abbreviations.has(normalized)) continue;
+            if (/^[A-Z]$/.test(token)) continue;
+            if (/[A-Z]\.[A-Z]$/.test(prior)) continue;
+
+            return text.slice(0, index + 1);
+          }
+
+          return text;
+        }
+
+        function citationText(sourceNote) {
+          let text = String(sourceNote || "")
+            .replace(/^Source:\s*/i, "")
+            .replace(/\s+/g, " ")
+            .trim();
+          if (!text) return "";
+
+          const cutPatterns = [
+            /\s+No classification markings?\b/i,
+            /\s+(?:Top Secret|Secret|Confidential|Unclassified|Limited Official Use|Official Use Only|For Official Use Only|Sensitive|Restricted Data|Formerly Restricted Data)\b(?:[.;,]|\s)/i
+          ];
+
+          const cutIndexes = cutPatterns
+            .map((pattern) => {
+              const match = pattern.exec(text);
+              return match ? match.index : -1;
+            })
+            .filter((index) => index > 0);
+          const hardCut = cutIndexes.length ? Math.min(...cutIndexes) : -1;
+          if (hardCut > 0) text = text.slice(0, hardCut).trim();
+
+          text = firstCitationSentence(text).trim();
+          return text.replace(/\s+([.;,])$/g, "$1");
+        }
+
         function setCount(shown, total, isRendering = false) {
           const suffix = isRendering ? " Rendering list..." : "";
-          countNode.textContent = `${shown.toLocaleString()} of ${total.toLocaleString()} Source notes shown.${suffix}`;
+          countNode.textContent = `${shown.toLocaleString()} of ${total.toLocaleString()} citations shown.${suffix}`;
         }
 
         function createNoteItem(note) {
@@ -398,7 +484,7 @@
 
           const text = document.createElement("p");
           text.className = "source-note-text";
-          text.textContent = note.source_note;
+          text.textContent = note.citation_text;
 
           item.append(heading, title, meta, text);
           return item;
@@ -465,7 +551,11 @@
           .then((payload) => {
             allNotes = (payload.notes || [])
               .filter((note) => note.status === "source_note" && note.source_note)
-              .map((note) => ({ ...note, searchText: noteSearchText(note) }));
+              .map((note) => {
+                const citation = citationText(note.source_note) || note.source_note;
+                const prepared = { ...note, citation_text: citation };
+                return { ...prepared, searchText: noteSearchText(prepared) };
+              });
 
             const volumes = [...new Set(allNotes.map((note) => note.volume_id).filter(Boolean))].sort();
             for (const volume of volumes) {
